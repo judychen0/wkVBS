@@ -1,0 +1,7 @@
+/wk_cms3/judychen/chip02/minitree_MC/autumn18/job_UL18_Znunug_pt130/
+/wk_cms3/judychen/chip02/minitree_MC/autumn18/job_UL18_Zg_pt130/
+/wk_cms3/judychen/chip02/minitree_MC/autumn18/job_UL18_Wg_pt130/
+/wk_cms3/judychen/chip02/minitree_MC/autumn18/job_UL18_GJets_MG_HT100to200/
+/wk_cms3/judychen/chip02/minitree_MC/autumn18/job_UL18_GJets_MG_HT200to400/
+/wk_cms3/judychen/chip02/minitree_MC/autumn18/job_UL18_GJets_MG_HT400to600/
+/wk_cms3/judychen/chip02/minitree_MC/autumn18/job_UL18_GJets_MG_HT600toInf/

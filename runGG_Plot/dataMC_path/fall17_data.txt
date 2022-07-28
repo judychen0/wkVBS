@@ -1,0 +1,5 @@
+/wk_cms3/judychen/chip02/minitree_Data/fall17/job_SinglePho_Run2017B_UL/
+/wk_cms3/judychen/chip02/minitree_Data/fall17/job_SinglePho_Run2017C_UL/
+/wk_cms3/judychen/chip02/minitree_Data/fall17/job_SinglePho_Run2017D_UL/
+/wk_cms3/judychen/chip02/minitree_Data/fall17/job_SinglePho_Run2017E_UL/
+/wk_cms3/judychen/chip02/minitree_Data/fall17/job_SinglePho_Run2017F_UL/
