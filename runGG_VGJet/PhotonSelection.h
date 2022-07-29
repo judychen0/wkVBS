@@ -157,13 +157,11 @@ void phoIDcut(Int_t iWP, Int_t year, TreeReader &data,  vector<int>& passed){
       else if(year == 2017 && (phoFiredSingleTrgs[ipho]>>8&1) == 0) boo = 1;
       else if(year == 2018 && (phoFiredSingleTrgs[ipho]>>7&1) == 0) boo = 1;
     }
-    else if(phoEt[ipho]>75){
-      if(year == 2016 && (HLTJet>>27&1) == 0) boo = 1;
-      else if(year == 2017 && (HLTJet>>27&1) == 0) boo = 1;
-      else if(year == 2018 && (HLTJet>>27&1) == 0) boo = 1;
+    else if(phoEt[ipho]>75 && phoEt[ipho]<210){
+      if((HLTJet>>27&1) == 0) boo = 1;
     }
     else if(phoEt[ipho]<75) boo = 1;
-
+    
     if(boo == 1) continue;
     
     Int_t pass =0;

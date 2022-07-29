@@ -1,8 +1,0 @@
-/wk_cms3/judychen/chip02/minitree_30/autumn18/job_EGamma_Run2018A_UL/
-/wk_cms3/judychen/chip02/minitree_30/autumn18/job_EGamma_Run2018B_UL/
-/wk_cms3/judychen/chip02/minitree_30/autumn18/job_EGamma_Run2018C_UL/
-/wk_cms3/judychen/chip02/minitree_30/autumn18/job_EGamma_Run2018D_UL/
-/wk_cms3/judychen/chip02/minitree_30/autumn18/job_MET_Run2018A_UL/
-/wk_cms3/judychen/chip02/minitree_30/autumn18/job_MET_Run2018B_UL/
-/wk_cms3/judychen/chip02/minitree_30/autumn18/job_MET_Run2018C_UL/
-/wk_cms3/judychen/chip02/minitree_30/autumn18/job_MET_Run2018D_UL/
