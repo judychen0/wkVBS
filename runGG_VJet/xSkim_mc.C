@@ -520,7 +520,7 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
     nGoodVtx		= 0;
     isPVGood		= 0;
     rho			= 0;
-    HLTJet_ = 0;
+    HLTJet = 0;
     genWeight		= 0;
     genWeightSign	= 0;
     EventWeight = 0;
@@ -643,14 +643,12 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
     for(Int_t ipho=0; ipho<nPho_; ipho++){
       Int_t boo = 0;
       if(phoEt_[ipho]>210){
-	if(year == 2016 && (phoFiredSingleTrgs_[ipho]>>7&1) == 0) boo = 1;
-	else if(year == 2017 && (phoFiredSingleTrgs_[ipho]>>8&1) == 0) boo = 1;
-	else if(year == 2018 && (phoFiredSingleTrgs_[ipho]>>7&1) == 0) boo = 1;
+      	if(year == 2016 && (phoFiredSingleTrgs_[ipho]>>7&1) == 0) boo = 1;
+      	else if(year == 2017 && (phoFiredSingleTrgs_[ipho]>>8&1) == 0) boo = 1;
+      	else if(year == 2018 && (phoFiredSingleTrgs_[ipho]>>7&1) == 0) boo = 1;
       }
-      else if(phoEt_[ipho]>75){
-      	if(year == 2016 && (HLTJet_>>27&1) == 0) boo = 1;
-      	else if(year == 2017 && (HLTJet_>>27&1) == 0) boo = 1;
-      	else if(year == 2018 && (HLTJet_>>27&1) == 0) boo = 1;
+      else if(phoEt_[ipho]>75 && phoEt_[ipho]<210){
+	if((HLTJet_>>27&1) == 0) boo = 1;
       }
       else if(phoEt_[ipho]<75) boo = 1;
 
