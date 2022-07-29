@@ -42,16 +42,16 @@ void xMerge_monoboson(Int_t year){
     rootname[3] = "/data1/GMET/ana/ggNtuples102X/V10_06_00_20/220406/summer16/mc/monoboson/job_summer16_EWK_Zvv/output_ggtree.root";
   }
   else if(year==2017){
-    rootname[0] = "/wk_cms3/judychen/chip02/output_ana/220715/fall17/mc/monoboson/job_fall17_EWK_Wminus/output_ggtree.root";
-    rootname[1] = "/wk_cms3/judychen/chip02/output_ana/220715/fall17/mc/monoboson/job_fall17_EWK_Wplus/output_ggtree.root";
-    rootname[2] = "/wk_cms3/judychen/chip02/output_ana/220715/fall17/mc/monoboson/job_fall17_EWK_Zll/output_ggtree.root";
-    rootname[3] = "/wk_cms3/judychen/chip02/output_ana/220715/fall17/mc/monoboson/job_fall17_EWK_Zvv/output_ggtree.root";
+    rootname[0] = "/wk_cms3/judychen/chip02/output_ana/220728/fall17/mc/monoboson/job_fall17_EWK_Wminus/output_ggtree.root";
+    rootname[1] = "/wk_cms3/judychen/chip02/output_ana/220728/fall17/mc/monoboson/job_fall17_EWK_Wplus/output_ggtree.root";
+    rootname[2] = "/wk_cms3/judychen/chip02/output_ana/220728/fall17/mc/monoboson/job_fall17_EWK_Zll/output_ggtree.root";
+    rootname[3] = "/wk_cms3/judychen/chip02/output_ana/220728/fall17/mc/monoboson/job_fall17_EWK_Zvv/output_ggtree.root";
   }
   else if(year==2018){
-    rootname[0] = "/wk_cms3/judychen/chip02/output_ana/220715/autumn18/mc/monoboson/job_autumn18_EWK_Wminus/output_ggtree.root";
-    rootname[1] = "/wk_cms3/judychen/chip02/output_ana/220715/autumn18/mc/monoboson/job_autumn18_EWK_Wplus/output_ggtree.root";
-    rootname[2] = "/wk_cms3/judychen/chip02/output_ana/220715/autumn18/mc/monoboson/job_autumn18_EWK_Zll/output_ggtree.root";
-    rootname[3] = "/wk_cms3/judychen/chip02/output_ana/220715/autumn18/mc/monoboson/job_autumn18_EWK_Zvv/output_ggtree.root";
+    rootname[0] = "/wk_cms3/judychen/chip02/output_ana/220728/autumn18/mc/monoboson/job_autumn18_EWK_Wminus/output_ggtree.root";
+    rootname[1] = "/wk_cms3/judychen/chip02/output_ana/220728/autumn18/mc/monoboson/job_autumn18_EWK_Wplus/output_ggtree.root";
+    rootname[2] = "/wk_cms3/judychen/chip02/output_ana/220728/autumn18/mc/monoboson/job_autumn18_EWK_Zll/output_ggtree.root";
+    rootname[3] = "/wk_cms3/judychen/chip02/output_ana/220728/autumn18/mc/monoboson/job_autumn18_EWK_Zvv/output_ggtree.root";
   }
 
   for(Int_t i=0; i<nmonoBoson; i++){
@@ -66,7 +66,7 @@ void xMerge_monoboson(Int_t year){
     cout << "print " << entries << " " << outentries << " " << scale[i]<< endl;
   }
 
-  Double_t ptbin[20] = {130, 150, 180, 210, 250, 300, 350, 400, 450, 500, 550, 600, 700, 800, 1000, 2000, 5000};//16 bins, 2016
+  Double_t ptbin[20] = {75, 90, 110, 130, 150, 180, 210, 250, 300, 350, 400, 450, 500, 550, 600, 700, 800, 1000, 2000};//18 bins, 2016
   //Double_t ptbin[20] = {0, 20, 35, 50, 100, 150, 200};//6 bins, Et_75
   Double_t etabin[20] = {-1.4442, -0.6, 0, 0.6, 1.4442};//4bins
   Double_t METbin[20] = {0, 45, 90, 135, 180, 250, 300, 400, 500, 650, 800, 1200};//10bins
@@ -124,19 +124,19 @@ void xMerge_monoboson(Int_t year){
 
   for(Int_t j=0; j<2; j++){
 
-    h_phoEB_pt_130[j] = new TH1F(Form("h_phoEB_pt_130_%i", j), "matched phoEB pt pt200 cut", 16, ptbin);
-    h_phoEB_pt_M[j] = new TH1F(Form("h_phoEB_pt_M_%i", j), "matched phoEB pt M IDcut", 16, ptbin);
-    h_phoEB_pt_leptonveto[j] = new TH1F(Form("h_phoEB_pt_leptonveto_%i", j), "leptonveto cut", 16, ptbin);
-    h_phoEB_pt_MET[j] = new TH1F(Form("h_phoEB_pt_MET_%i", j), "matched phoEB pt MET cut", 16, ptbin);
-    h_phoEB_pt_dphoMETPhi[j] = new TH1F(Form("h_phoEB_pt_dphoMETPhi_%i", j), "matched phoEB pt dphoMETPhi cut", 16, ptbin);
-    h_phoEB_pt_jetveto[j] = new TH1F(Form("h_phoEB_pt_jetveto_%i", j), Form("h_phoEB_pt_jetveto_%i", j), 16, ptbin);
-    h_phoEB_pt_jetpt[j] = new TH1F(Form("h_phoEB_pt_jetpt_%i", j), Form("h_phoEB_pt_jetpt_%i", j), 16, ptbin);  
-    h_phoEB_pt_jetjetdEta[j] = new TH1F(Form("h_phoEB_pt_jetjetdEta_%i", j), "jetjet dEta cut", 16, ptbin);
-    h_phoEB_pt_jetjetdPhi[j] = new TH1F(Form("h_phoEB_pt_jetjetdPhi_%i", j), "jetjet dPhi cut", 16, ptbin);
-    h_phoEB_pt_phojetdR[j] = new TH1F(Form("h_phoEB_pt_phojetdR_%i", j), "phojet dR cut", 16, ptbin);
-    h_phoEB_pt_ptoverMET[j] = new TH1F(Form("h_phoEB_pt_ptoverMET_%i", j), "phoCentral cut", 16, ptbin);
-    h_phoEB_pt_mindJMETPhi[j] = new TH1F(Form("h_phoEB_pt_mindJMETPhi_%i", j), "mindJMETPhi cut", 16, ptbin);
-    h_phoEB_pt_dijetMass[j] = new TH1F(Form("h_phoEB_pt_dijetMass_%i", j), "dijetMass cut", 16, ptbin);
+    h_phoEB_pt_130[j] = new TH1F(Form("h_phoEB_pt_130_%i", j), "matched phoEB pt pt200 cut", 18, ptbin);
+    h_phoEB_pt_M[j] = new TH1F(Form("h_phoEB_pt_M_%i", j), "matched phoEB pt M IDcut", 18, ptbin);
+    h_phoEB_pt_leptonveto[j] = new TH1F(Form("h_phoEB_pt_leptonveto_%i", j), "leptonveto cut", 18, ptbin);
+    h_phoEB_pt_MET[j] = new TH1F(Form("h_phoEB_pt_MET_%i", j), "matched phoEB pt MET cut", 18, ptbin);
+    h_phoEB_pt_dphoMETPhi[j] = new TH1F(Form("h_phoEB_pt_dphoMETPhi_%i", j), "matched phoEB pt dphoMETPhi cut", 18, ptbin);
+    h_phoEB_pt_jetveto[j] = new TH1F(Form("h_phoEB_pt_jetveto_%i", j), Form("h_phoEB_pt_jetveto_%i", j), 18, ptbin);
+    h_phoEB_pt_jetpt[j] = new TH1F(Form("h_phoEB_pt_jetpt_%i", j), Form("h_phoEB_pt_jetpt_%i", j), 18, ptbin);  
+    h_phoEB_pt_jetjetdEta[j] = new TH1F(Form("h_phoEB_pt_jetjetdEta_%i", j), "jetjet dEta cut", 18, ptbin);
+    h_phoEB_pt_jetjetdPhi[j] = new TH1F(Form("h_phoEB_pt_jetjetdPhi_%i", j), "jetjet dPhi cut", 18, ptbin);
+    h_phoEB_pt_phojetdR[j] = new TH1F(Form("h_phoEB_pt_phojetdR_%i", j), "phojet dR cut", 18, ptbin);
+    h_phoEB_pt_ptoverMET[j] = new TH1F(Form("h_phoEB_pt_ptoverMET_%i", j), "phoCentral cut", 18, ptbin);
+    h_phoEB_pt_mindJMETPhi[j] = new TH1F(Form("h_phoEB_pt_mindJMETPhi_%i", j), "mindJMETPhi cut", 18, ptbin);
+    h_phoEB_pt_dijetMass[j] = new TH1F(Form("h_phoEB_pt_dijetMass_%i", j), "dijetMass cut", 18, ptbin);
 
     h_MET_130[j] = new TH1F(Form("h_MET_130_%i", j), "matched MET pt200 cut", 10, METbin);
     h_MET_M[j] = new TH1F(Form("h_MET_M_%i", j), "matched MET M IDcut", 10, METbin);
@@ -153,7 +153,7 @@ void xMerge_monoboson(Int_t year){
     h_MET_dijetMass[j] = new TH1F(Form("h_MET_dijetMass_%i", j), "dijetMass cut", 10, METbin);
 
 
-    h_phoEB_ptcut[j] = new TH1F(Form("h_phoEB_ptcut_%i", j), "phoEB pt cut all pas varbin", 16, ptbin);
+    h_phoEB_ptcut[j] = new TH1F(Form("h_phoEB_ptcut_%i", j), "phoEB pt cut all pas varbin", 18, ptbin);
     h_phoEB_Etacut[j] = new TH1F(Form("h_phoEB_Etacut_%i", j), "phoEB eta cut all pas varbins", 4, etabin);
     h_phoEB_Phicut[j] = new TH1F(Form("h_phoEB_Phicut_%i", j), "phoEB phi cut all pas varbins", 10, phibin);
 
@@ -286,7 +286,7 @@ void xMerge_monoboson(Int_t year){
   TH1F *h_dEta_jetjet_ptoverMET_CR_minJMETdPhi_SB;
   TH1F *h_minJMETdPhi_ptoverMET_CR_minJMETdPhi_SB;
 
-  h_phoEB_ptcut_ptoverMET_CR_minJMETdPhi_SB = new TH1F("h_phoEB_ptcut_ptoverMET_CR_minJMETdPhi_SB", "", 16, ptbin);
+  h_phoEB_ptcut_ptoverMET_CR_minJMETdPhi_SB = new TH1F("h_phoEB_ptcut_ptoverMET_CR_minJMETdPhi_SB", "", 18, ptbin);
   h_jetpt_ptoverMET_CR_minJMETdPhi_SB = new TH1F("h_jetpt_ptoverMET_CR_minJMETdPhi_SB", "", 8, jetptbin);
   h_MET_ptoverMET_CR_minJMETdPhi_SB = new TH1F("h_MET_ptoverMET_CR_minJMETdPhi_SB", "", 10, METbin);
   h_dphoMETPhi_ptoverMET_CR_minJMETdPhi_SB = new TH1F("h_dphoMETPhi_ptoverMET_CR_minJMETdPhi_SB", "", 14, dphibin);
@@ -303,7 +303,7 @@ void xMerge_monoboson(Int_t year){
   TH1F *h_dEta_jetjet_ptoverMET_CR;
   TH1F *h_minJMETdPhi_ptoverMET_CR;
 
-  h_phoEB_ptcut_ptoverMET_CR = new TH1F("h_phoEB_ptcut_ptoverMET_CR", "", 16, ptbin);
+  h_phoEB_ptcut_ptoverMET_CR = new TH1F("h_phoEB_ptcut_ptoverMET_CR", "", 18, ptbin);
   h_jetpt_ptoverMET_CR = new TH1F("h_jetpt_ptoverMET_CR", "", 8, jetptbin);
   h_MET_ptoverMET_CR = new TH1F("h_MET_ptoverMET_CR", "", 10, METbin);
   h_dphoMETPhi_ptoverMET_CR = new TH1F("h_dphoMETPhi_ptoverMET_CR", "", 14, dphibin);
@@ -320,7 +320,7 @@ void xMerge_monoboson(Int_t year){
   TH1F *h_dEta_jetjet_ptoverMET_SR_minJMETdPhi_SB;
   TH1F *h_minJMETdPhi_ptoverMET_SR_minJMETdPhi_SB;
 
-  h_phoEB_ptcut_ptoverMET_SR_minJMETdPhi_SB = new TH1F("h_phoEB_ptcut_ptoverMET_SR_minJMETdPhi_SB", "", 16, ptbin);
+  h_phoEB_ptcut_ptoverMET_SR_minJMETdPhi_SB = new TH1F("h_phoEB_ptcut_ptoverMET_SR_minJMETdPhi_SB", "", 18, ptbin);
   h_jetpt_ptoverMET_SR_minJMETdPhi_SB = new TH1F("h_jetpt_ptoverMET_SR_minJMETdPhi_SB", "", 8, jetptbin);
   h_MET_ptoverMET_SR_minJMETdPhi_SB = new TH1F("h_MET_ptoverMET_SR_minJMETdPhi_SB", "", 10, METbin);
   h_dphoMETPhi_ptoverMET_SR_minJMETdPhi_SB = new TH1F("h_dphoMETPhi_ptoverMET_SR_minJMETdPhi_SB", "", 14, dphibin);
@@ -337,7 +337,7 @@ void xMerge_monoboson(Int_t year){
   TH1F *h_dEta_jetjet_ptoverMET_SR;
   TH1F *h_minJMETdPhi_ptoverMET_SR;
 
-  h_phoEB_ptcut_ptoverMET_SR = new TH1F("h_phoEB_ptcut_ptoverMET_SR", "", 16, ptbin);
+  h_phoEB_ptcut_ptoverMET_SR = new TH1F("h_phoEB_ptcut_ptoverMET_SR", "", 18, ptbin);
   h_jetpt_ptoverMET_SR = new TH1F("h_jetpt_ptoverMET_SR", "", 8, jetptbin);
   h_MET_ptoverMET_SR = new TH1F("h_MET_ptoverMET_SR", "", 10, METbin);
   h_dphoMETPhi_ptoverMET_SR = new TH1F("h_dphoMETPhi_ptoverMET_SR", "", 14, dphibin);
