@@ -1,0 +1,9 @@
+/data1/GMET/minitree_MC/fall17/job_UL17_Znunug_VBS/
+/data1/GMET/minitree_MC/fall17/job_UL17_Znunug_pt130/
+/data1/GMET/minitree_MC/fall17/job_UL17_Zg_pt130/
+/data1/GMET/minitree_MC/fall17/job_UL17_Wg_pt130/
+/data1/GMET/minitree_MC/fall17/job_UL17_GJets_MG_HT100to200/
+/data1/GMET/minitree_MC/fall17/job_UL17_GJets_MG_HT200to400/
+/data1/GMET/minitree_MC/fall17/job_UL17_GJets_MG_HT400to600/
+/data1/GMET/minitree_MC/fall17/job_UL17_GJets_MG_HT600toInf/
+

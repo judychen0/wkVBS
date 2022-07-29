@@ -1,0 +1,8 @@
+/data1/GMET/minitree_Data/autumn18/job_EGamma_Run2018A_UL/
+/data1/GMET/minitree_Data/autumn18/job_EGamma_Run2018B_UL/
+/data1/GMET/minitree_Data/autumn18/job_EGamma_Run2018C_UL/
+/data1/GMET/minitree_Data/autumn18/job_EGamma_Run2018D_UL/
+/data1/GMET/minitree_Data/autumn18/job_MET_Run2018A_UL/
+/data1/GMET/minitree_Data/autumn18/job_MET_Run2018B_UL/
+/data1/GMET/minitree_Data/autumn18/job_MET_Run2018C_UL/
+/data1/GMET/minitree_Data/autumn18/job_MET_Run2018D_UL/
