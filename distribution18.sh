@@ -26,10 +26,9 @@ mv job_autumn18_WZG/ triboson/
 mkdir TT
 mv job_autumn18_TT* TT/
 cd VJet/
-cp job_autumn18_DYJetsToLL_m50_MG_HT400to600_ext1/output_ggtree.root job_autumn18_DYJetsToLL_m50_MG_HT400to600/output_ggtree1.root
 cp job_autumn18_DYJetsToLL_m50_MG_HT400to600_ext2/output_ggtree.root job_autumn18_DYJetsToLL_m50_MG_HT400to600/output_ggtree2.root
 cd job_autumn18_DYJetsToLL_m50_MG_HT400to600
 mv output_ggtree.root output_ggtree0.root
-hadd output_ggtree.root output_ggtree0.root output_ggtree1.root output_ggtree2.root
+hadd output_ggtree.root output_ggtree0.root output_ggtree2.root
 cd ~/wkVBS
 
