@@ -171,7 +171,9 @@ void xSkim_data(char* pathes, Int_t year, Int_t isMET){
   Float_t       rho;
   Float_t       EventWeight;
   Long64_t	HLTJet;		// MET trigger HLT_PFMET120_PFMHT120_IDTight_v
-
+  Int_t METTrgs;
+  Int_t PhoTrgs;
+  
   // MET
   Float_t               pfMET;
   Float_t               pfMETPhi;
@@ -303,6 +305,8 @@ void xSkim_data(char* pathes, Int_t year, Int_t isMET){
   outtree_->Branch("rho"			,&rho           ,"rho/F"		);
   outtree_->Branch("EventWeight"		,&EventWeight   ,"EventWeight/F"	);
   outtree_->Branch("HLTJet"		,&HLTJet   ,"HLTJet/L"	);
+  outtree_->Branch("METTrgs"		,&METTrgs   ,"METTrgs/I"	);
+  outtree_->Branch("PhoTrgs"		,&PhoTrgs   ,"PhoTrgs/I"	);
   outtree_->Branch("pfMET"			,&pfMET         ,"pfMET/F"		);
   outtree_->Branch("pfMETPhi"			,&pfMETPhi      ,"pfMETPhi/F"		);
   outtree_->Branch("puppiMET"			,&puppiMET      ,"puppiMET/F"		);
@@ -511,6 +515,8 @@ void xSkim_data(char* pathes, Int_t year, Int_t isMET){
     rho		 = 0;
     EventWeight	 = 1;
     HLTJet = 0;
+    METTrgs = 0;
+    PhoTrgs = 0;
     
     pfMET	 = 0;
     pfMETPhi	 = 0;
@@ -867,6 +873,15 @@ void xSkim_data(char* pathes, Int_t year, Int_t isMET){
     //cutflow setbit
     for(Int_t ipho=0; ipho<nPho; ipho++){
       if(ipho > 0) continue;
+      if(isMET == 0){
+	METTrgs = 0;
+	PhoTrgs = 1;
+      }
+      else{
+	METTrgs = 1;
+	PhoTrgs = 0;
+      }
+      
       bit=0;
 											bit = SetBit(0, bit);
       if(phohasPixelSeed[ipho] == 0)							bit = SetBit(1, bit);
@@ -876,6 +891,8 @@ void xSkim_data(char* pathes, Int_t year, Int_t isMET){
       if(MphoID[ipho] == 1)								bit = SetBit(4, bit);
       if(fabs(phoSeedTime[ipho])<3)							bit = SetBit(5, bit);
       if(nLep<1)									bit = SetBit(6, bit);
+      //if(isMET == 0 && puppiMET>100)									bit = SetBit(7, bit);
+      //else if(isMET == 1 && puppiMET>180)									bit = SetBit(7, bit);
       if(puppiMET>180)									bit = SetBit(7, bit);
       if(fabs(phoMETdPhi[ipho]) > 1.2)							bit = SetBit(8, bit); 
       if(npfjet == 1 ){bit = SetBit(9, bit); nSMjet = npfjet;}
@@ -890,7 +907,7 @@ void xSkim_data(char* pathes, Int_t year, Int_t isMET){
 	Int_t ilead = nonPUjetid[0];
 	Int_t isub = nonPUjetid[1];
 
-	bit = SetBit(8, bit);
+	if(fabs(phoMETdPhi[ipho]) >0.5) bit = SetBit(8, bit);
 	bit = SetBit(9, bit); //njet cut
 	if(jetPt_[ilead] >50 && jetPt_[isub] >30) bit = SetBit(10, bit);
 	if((jetEta_[ilead] * jetEta_[isub]) < 0 && jetjetdEta>2.5)					bit = SetBit(11, bit);
