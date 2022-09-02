@@ -56,7 +56,7 @@ Int_t ResetBit(Int_t nbit, Int_t bit){
 }
 
 void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int_t dcount, Int_t year, Int_t sig, Int_t ULsamples){
-
+  
   // Get processed events
   TFile *fopen = new TFile(pathes, "READ");
   TH1F *hEvents = (TH1F*)fopen->Get("ggNtuplizer/hEvents")->Clone();
@@ -94,6 +94,24 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
   string treename = treestr.substr(istr);
   sprintf(foutname, "mini_%s", treename.c_str());
   fout_ = new TFile(foutname,"RECREATE");
+
+  Double_t ptbin[20] = {75, 90, 110, 130, 150, 180, 210, 250, 300, 350, 400, 450, 500, 550, 600, 700, 800, 1000, 2000};//18 bins, 2016
+  Double_t METbin[20] = {0, 45, 90, 135, 180, 250, 300, 400, 500, 650, 800, 1200};//10bins
+  
+  // HLT plot
+  TH1F *h_MET_HLTpass;
+  TH1F *h_MET_HLTbase;
+  TH1F *h_phoEt_HLTpass;
+  TH1F *h_phoEt_HLTbase;
+  
+  h_MET_HLTpass = new TH1F("h_MET_HLTpass", "", 10, METbin);
+  h_MET_HLTbase = new TH1F("h_MET_HLTbase", "", 10, METbin);
+  h_phoEt_HLTpass = new TH1F("h_phoEt_HLTpass", "", 18, ptbin);
+  h_phoEt_HLTbase = new TH1F("h_phoEt_HLTbase", "", 18, ptbin);
+  h_MET_HLTpass->Sumw2();
+  h_MET_HLTbase->Sumw2();
+  h_phoEt_HLTpass->Sumw2();
+  h_phoEt_HLTbase->Sumw2();
 
   ////
   // input variables
@@ -191,6 +209,8 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
   Bool_t                isPVGood;
   Float_t               rho;
   Long64_t HLTJet;
+  Int_t METTrgs;
+  Int_t PhoTrgs;
   Float_t               genWeight;
   Float_t               genWeightSign;
   Float_t		EventWeight;
@@ -319,6 +339,8 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
   outtree_->Branch("isPVGood"			,&isPVGood      ,"isPVGood/O"		);
   outtree_->Branch("rho"			,&rho           ,"rho/F"		);
   outtree_->Branch("HLTJet"			,&HLTJet           ,"HLTJet/L"		);
+  outtree_->Branch("METTrgs"			,&METTrgs           ,"METTrgs/I"		);
+  outtree_->Branch("PhoTrgs"			,&PhoTrgs           ,"PhoTrgs/I"		);
   outtree_->Branch("genWeight"			,&genWeight     ,"genWeight/F"		);
   outtree_->Branch("genWeightSign"		,&genWeightSign ,"genWeightSign/F"	);
   outtree_->Branch("EventWeight"                ,&EventWeight	,"EventWeight/F"	);
@@ -522,6 +544,8 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
     isPVGood		= 0;
     rho			= 0;
     HLTJet = 0;
+    METTrgs = 0;
+    PhoTrgs = 0;
     genWeight		= 0;
     genWeightSign	= 0;
     EventWeight = 0;
@@ -639,21 +663,69 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
       rhoCorrection(iso, data, isolist);
       Iso_rc.push_back(isolist);
     }
-    
+
+    //jet smear
+    for(Int_t ijet=0; ijet<nJet_; ijet++){
+      //if(year == 2017 && ULsamples == 0 && jetPt_[ijet]<50 && fabs(jetEta_[ijet])>2.56 && fabs(jetEta_[ijet])<3.139) jetPt_[ijet] = 0;//remove 2017 ecal noise
+      if((jetPt_[ijet]*jetP4Smear_[ijet]) <= 0) jetPtSmear.push_back(0);
+      else jetPtSmear.push_back(jetPt_[ijet]*jetP4Smear_[ijet]);
+    }
+    //cout << "get jet smearing" << endl;
+
+    //propagate JEC to MET
+    TVector2 jetv2[nJet_], corrjetv2[nJet_];
+    TVector2 sumjet;
+    TVector2 sumcorrjet;
+    for(Int_t ijet=0; ijet<nJet_; ijet++){
+      jetv2[ijet].SetMagPhi(jetPt_[ijet], jetPhi_[ijet]);
+      corrjetv2[ijet].SetMagPhi(jetPtSmear[ijet], jetPhi_[ijet]);
+      if(jetPtSmear[ijet]>10){
+	sumjet += jetv2[ijet];
+	sumcorrjet += corrjetv2[ijet];
+      }
+    }
+    TVector2 METv2;
+    if(ULsamples == 1 && sig == 0) METv2.SetMagPhi(puppiMET_, puppiMETPhi_);
+    else METv2.SetMagPhi(pfMET_, pfMETPhi_);
+    TVector2 corrMETv2;
+    corrMETv2 = METv2 + sumjet - sumcorrjet;
+    corrMET = corrMETv2.Mod();
+    corrMETPhi = Phi_mpi_pi(corrMETv2.Phi());
+    //cout << "get MET corr" << endl;
+
+    //MET XY corr
+    if(ULsamples == 0 || sig == 1){
+      vector<Float_t> corrXY; corrXY.clear();
+      METXYshift(year, pathes, data, corrMET, corrXY);
+      corrMET = corrXY[0];
+      corrMETPhi = Phi_mpi_pi(corrXY[1]);
+    }
+    //cout << "get METPhi corr" << endl;
+
+    // if(nPho_>0 && phoEt_[0]>75) {
+    //   h_MET_HLTbase->Fill(corrMET);
+    //   h_phoEt_HLTbase->Fill(phoEt_[0]);
+    // }
     
     for(Int_t ipho=0; ipho<nPho_; ipho++){
-      Int_t boo = 0;
-      if(phoEt_[ipho]>210){
-      	if(year == 2016 && (phoFiredSingleTrgs_[ipho]>>7&1) == 0) boo = 1;
-      	else if(year == 2017 && (phoFiredSingleTrgs_[ipho]>>8&1) == 0) boo = 1;
-      	else if(year == 2018 && (phoFiredSingleTrgs_[ipho]>>7&1) == 0) boo = 1;
-      }
-      else if(phoEt_[ipho]>75 && phoEt_[ipho]<210){
-	if((HLTJet_>>27&1) == 0) boo = 1;
-      }
-      else if(phoEt_[ipho]<75) boo = 1;
+      Int_t boo_MET = 0;
+      Int_t boo_pho = 0;
       
-      if(boo == 1) continue;
+      if(phoEt_[ipho]>75){
+	if((HLTJet_>>27&1) == 0) boo_MET = 1;
+
+	if(phoEt_[ipho]>200){
+	  if(year == 2016 && (phoFiredSingleTrgs_[ipho]>>7&1) == 0) boo_pho = 1;
+	  else if(year == 2017 && (phoFiredSingleTrgs_[ipho]>>8&1) == 0) boo_pho = 1;
+	  else if(year == 2018 && (phoFiredSingleTrgs_[ipho]>>7&1) == 0) boo_pho = 1;
+	}
+      }
+      else{
+	boo_MET = 1;
+	boo_pho = 1;
+      }
+      
+      if(boo_MET == 1 && boo_pho == 1) continue;
       
       nPho++;
       phoE.push_back(phoE_[ipho]);
@@ -683,7 +755,21 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
     }
     //cout << "get rho corr" << endl;
     if(nPho<1) continue;
-    
+
+    // fill HLTpass plots
+    for(Int_t ipho=0; ipho<nPho; ipho++){
+      if(ipho>0) continue;
+      if((HLTJet_>>27&1) == 1) METTrgs = 1;
+
+      if(year == 2016 && (phoFiredSingleTrgs[ipho]>>7&1) == 1) PhoTrgs = 1;
+      else if(year == 2017 && (phoFiredSingleTrgs[ipho]>>8&1) == 1) PhoTrgs = 1;
+      else if(year == 2018 && (phoFiredSingleTrgs[ipho]>>7&1) == 1) PhoTrgs = 1;
+      
+    }
+
+    // if(METTrgs == 1) h_MET_HLTpass->Fill(corrMET);
+    // if(PhoTrgs == 1) h_phoEt_HLTpass->Fill(phoEt[0]);
+
     //get mc photon id
     vector<Int_t> mc_phoid; mc_phoid.clear();
     for(Int_t k=0; k < nMC_; k++){
@@ -789,45 +875,7 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
     Int_t nlep = 0;
     nLep = nLele + nLmu;
     //cout << "get lepton veto" << endl;
-   
-    //jet smear
-    for(Int_t ijet=0; ijet<nJet_; ijet++){
-      //if(year == 2017 && ULsamples == 0 && jetPt_[ijet]<50 && fabs(jetEta_[ijet])>2.56 && fabs(jetEta_[ijet])<3.139) jetPt_[ijet] = 0;//remove 2017 ecal noise
-      if((jetPt_[ijet]*jetP4Smear_[ijet]) <= 0) jetPtSmear.push_back(0);
-      else jetPtSmear.push_back(jetPt_[ijet]*jetP4Smear_[ijet]);
-    }
-    //cout << "get jet smearing" << endl;
-
-    //propagate JEC to MET
-    TVector2 jetv2[nJet_], corrjetv2[nJet_];
-    TVector2 sumjet;
-    TVector2 sumcorrjet;
-    for(Int_t ijet=0; ijet<nJet_; ijet++){
-      jetv2[ijet].SetMagPhi(jetPt_[ijet], jetPhi_[ijet]);
-      corrjetv2[ijet].SetMagPhi(jetPtSmear[ijet], jetPhi_[ijet]);
-      if(jetPtSmear[ijet]>10){
-	sumjet += jetv2[ijet];
-	sumcorrjet += corrjetv2[ijet];
-      }
-    }
-    TVector2 METv2;
-    if(ULsamples == 1 && sig == 0) METv2.SetMagPhi(puppiMET_, puppiMETPhi_);
-    else METv2.SetMagPhi(pfMET_, pfMETPhi_);
-    TVector2 corrMETv2;
-    corrMETv2 = METv2 + sumjet - sumcorrjet;
-    corrMET = corrMETv2.Mod();
-    corrMETPhi = Phi_mpi_pi(corrMETv2.Phi());
-    //cout << "get MET corr" << endl;
-
-    //MET XY corr
-    if(ULsamples == 0 || sig == 1){
-      vector<Float_t> corrXY; corrXY.clear();
-      METXYshift(year, pathes, data, corrMET, corrXY);
-      corrMET = corrXY[0];
-      corrMETPhi = Phi_mpi_pi(corrXY[1]);
-    }
-    //cout << "get METPhi corr" << endl;
-    
+       
     //jetID selection TLepVeto
     if(ULsamples == 0){
       jet_TIDsel(year, data, jetTID);
@@ -987,6 +1035,8 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
       if(MphoID[ipho] == 1)								bit = SetBit(4, bit);
       if(fabs(phoSeedTime[ipho])<3)							bit = SetBit(5, bit);
       if(nLep<1)									bit = SetBit(6, bit);
+      //if(phoEt[ipho]<210 && corrMET>180)									bit = SetBit(7, bit);
+      //else if(phoEt[ipho]>210 && corrMET>100)									bit = SetBit(7, bit);
       if(corrMET>180)									bit = SetBit(7, bit);
       if(fabs(phoMETdPhi[ipho]) > 1.2)							bit = SetBit(8, bit);
       
@@ -1004,6 +1054,7 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
 	Int_t ilead = nonPUjetid[0];
 	Int_t isub = nonPUjetid[1];
 
+	//if(fabs(phoMETdPhi[ipho]) > 0.5) bit = SetBit(8, bit);
 	bit = SetBit(8, bit);
  	bit = SetBit(9, bit); //njet cut
 	if(jetPtSmear[ilead] >50 && jetPtSmear[isub] >30) bit = SetBit(10, bit);
@@ -1104,6 +1155,11 @@ void xSkim_mc(char* pathes, char* PUpathes, char* IDpathes, char* PSVpathes, Int
   
   hSumofGenW->Write();
   hEvents->Write();
+
+  // h_MET_HLTpass->Write();
+  // h_MET_HLTbase->Write();
+  // h_phoEt_HLTpass->Write();
+  // h_phoEt_HLTbase->Write();
   
   fout_->Close();
   fprintf(stderr, "%s Processed all events\n", treename.c_str());

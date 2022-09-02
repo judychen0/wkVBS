@@ -151,18 +151,24 @@ void phoIDcut(Int_t iWP, Int_t year, TreeReader &data,  vector<int>& passed){
   
   //Int_t nPho = realpho.size();
   for(Int_t ipho=0; ipho < nPho; ipho++){
-    Int_t boo = 0;
-    if(phoEt[ipho]>210){
-      if(year == 2016 && (phoFiredSingleTrgs[ipho]>>7&1) == 0) boo = 1;
-      else if(year == 2017 && (phoFiredSingleTrgs[ipho]>>8&1) == 0) boo = 1;
-      else if(year == 2018 && (phoFiredSingleTrgs[ipho]>>7&1) == 0) boo = 1;
+    Int_t boo_MET = 0;
+    Int_t boo_pho = 0;
+      
+    if(phoEt[ipho]>75){
+      if((HLTJet>>27&1) == 0) boo_MET = 1;
+
+      if(phoEt[ipho]>200){
+	if(year == 2016 && (phoFiredSingleTrgs[ipho]>>7&1) == 0) boo_pho = 1;
+	else if(year == 2017 && (phoFiredSingleTrgs[ipho]>>8&1) == 0) boo_pho = 1;
+	else if(year == 2018 && (phoFiredSingleTrgs[ipho]>>7&1) == 0) boo_pho = 1;
+      }
     }
-    else if(phoEt[ipho]>75 && phoEt[ipho]<210){
-      if((HLTJet>>27&1) == 0) boo = 1;
+    else{
+      boo_MET = 1;
+      boo_pho = 1;
     }
-    else if(phoEt[ipho]<75) boo = 1;
-    
-    if(boo == 1) continue;
+      
+    if(boo_MET == 1 && boo_pho == 1) continue;
     
     Int_t pass =0;
     if((phoID[ipho]>>iWP&1) == 1) pass =1;
