@@ -7,88 +7,93 @@
 
 using namespace std;
 //#define nfile 8
-#define nhisto 2
 #define njet 2
 #define ncolor 10
 
-void xDrawdatacut(Int_t year){
+void xDrawdatacut(Int_t year, Int_t isSM){
   ofstream ftext;
   TString rootname[10];
   TFile *fopen;
-  TTree *t;
 
   const char *title;
   //const char *saveto = "/home/judy/ntuhep/GJet/summer16_Zg_EWK/"; 
   const char *saveto = ".";
-
+  
   if(year==2016){
     rootname[0] = "/home/judy/ntuhep/GMET/output_file/summer16/data/output_ggtree.root";
   }
   else if(year==2017){
-    rootname[0] = "/data1/GMET/ana/ggNtuples102X/V10_06_00_20/220406/fall17/data/output_ggtree.root";
+    rootname[0] = "/data1/GMET/ana/230222/fall17/data/output_ggtree.root";
   }
   else if(year==2018){
-    rootname[0] = "/wk_cms3/judychen/chip02/output_ana/220706/autumn18/data/output_ggtree.root";
+    rootname[0] = "/data1/GMET/ana/230222/autumn18/data/output_ggtree.root";
+  }
+  
+  Float_t integral[15] = {};
+
+  // Create histos to import from file
+  TH1F *H_phoEB_pt_phopt;
+  TH1F *H_phoEB_pt_MphoID;
+  TH1F *H_phoEB_pt_lepveto;
+  TH1F *H_phoEB_pt_MET;
+  TH1F *H_phoEB_pt_dphoMETPhi;
+  TH1F *H_phoEB_pt_njet;
+  //isSM == 0)
+  TH1F *H_phoEB_pt_jetpt;
+  TH1F *H_phoEB_pt_jetjetdEta;
+  TH1F *H_phoEB_pt_jetjetdPhi;
+  TH1F *H_phoEB_pt_phojetdR;
+  TH1F *H_phoEB_pt_ptoverMET;
+  TH1F *H_phoEB_pt_mindJMETPhi;
+  TH1F *H_phoEB_pt_diejtMass;
+  
+  fopen = new TFile(rootname[0]);
+
+  // import histos from file
+  H_phoEB_pt_phopt = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_phopt"));
+  H_phoEB_pt_MphoID = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_MphoID"));
+  H_phoEB_pt_lepveto = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_lepveto"));
+  H_phoEB_pt_MET = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_MET"));
+  H_phoEB_pt_dphoMETPhi = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_dphoMETPhi"));
+  H_phoEB_pt_njet = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_njet"));
+  if(isSM == 0){
+    H_phoEB_pt_jetpt = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_jetpt"));
+    H_phoEB_pt_jetjetdEta = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_jetjetdEta"));
+    H_phoEB_pt_jetjetdPhi = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_jetjetdPhi"));
+    H_phoEB_pt_phojetdR = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_phojetdR"));
+    H_phoEB_pt_ptoverMET = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_ptoverMET"));
+    H_phoEB_pt_mindJMETPhi = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_mindJMETPhi"));
+    H_phoEB_pt_diejtMass = (TH1F*)fopen->Get(Form("phoEB_pt/h_phoEB_pt_diejtMass"));
   }
 
-  Float_t integral[15][nhisto];
-  
-  TH1F *H_phoEB_pt_210[nhisto];
-  TH1F *H_phoEB_pt_M[nhisto];
-  TH1F *H_phoEB_pt_leptonveto[nhisto];
-  TH1F *H_phoEB_pt_MET[nhisto];
-  TH1F *H_phoEB_pt_dphoMETPhi[nhisto]; // jetjetphodPhi
-  TH1F *H_phoEB_pt_jetveto[nhisto];
-  TH1F *H_phoEB_pt_jetjetdEta[nhisto];
-  TH1F *H_phoEB_pt_jetjetdPhi[nhisto];
-  TH1F *H_phoEB_pt_phojetdR[nhisto];
-  TH1F *H_phoEB_pt_ptoverMET[nhisto]; // ptoverMET
-  TH1F *H_phoEB_pt_mindJMETPhi[nhisto];
-  TH1F *H_phoEB_pt_dijetMass[nhisto];
-  
-  for(Int_t jj=0; jj<nhisto; jj++){
-    fopen = new TFile(rootname[0]);
-
-    H_phoEB_pt_210[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_210_%i", jj));
-    H_phoEB_pt_M[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_M_%i", jj));
-    H_phoEB_pt_leptonveto[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_leptonveto_%i", jj));
-    H_phoEB_pt_MET[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_MET_%i", jj));
-    H_phoEB_pt_dphoMETPhi[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_dphoMETPhi_%i", jj));
-    H_phoEB_pt_jetjetdEta[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_jetjetdEta_%i", jj));
-    H_phoEB_pt_jetjetdPhi[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_jetjetdPhi_%i", jj));
-    H_phoEB_pt_phojetdR[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_phojetdR_%i", jj));
-    H_phoEB_pt_ptoverMET[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_ptoverMET_%i", jj));
-    H_phoEB_pt_mindJMETPhi[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_mindJMETPhi_%i", jj));
-    H_phoEB_pt_dijetMass[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_dijetMass_%i", jj));
-    H_phoEB_pt_jetveto[jj] = (TH1F*)fopen->Get(Form("SMandVBS/h_phoEB_pt_jetveto_%i", jj));
-    
-    integral[0][jj] = H_phoEB_pt_210[jj]->Integral(1, -1);
-    integral[1][jj] = H_phoEB_pt_M[jj]->Integral(1, -1);
-    integral[2][jj] = H_phoEB_pt_leptonveto[jj]->Integral(1, -1);
-    integral[3][jj] = H_phoEB_pt_MET[jj]->Integral(1, -1);
-    integral[4][jj] = H_phoEB_pt_dphoMETPhi[jj]->Integral(1, -1);
-    integral[5][jj] = H_phoEB_pt_jetveto[jj]->Integral(1, -1);
-    integral[6][jj] = H_phoEB_pt_jetjetdEta[jj]->Integral(1, -1);
-    integral[7][jj] = H_phoEB_pt_jetjetdPhi[jj]->Integral(1, -1);
-    integral[8][jj] = H_phoEB_pt_phojetdR[jj]->Integral(1, -1);
-    integral[9][jj] = H_phoEB_pt_ptoverMET[jj]->Integral(1, -1);
-    integral[10][jj] = H_phoEB_pt_mindJMETPhi[jj]->Integral(1, -1);
-    integral[11][jj] = H_phoEB_pt_dijetMass[jj]->Integral(1, -1);
-    
-
+  // calculate remained events after every cut
+  integral[0] = H_phoEB_pt_phopt->Integral(1,-1);
+  integral[1] = H_phoEB_pt_MphoID->Integral(1,-1);
+  integral[2] = H_phoEB_pt_lepveto->Integral(1,-1);
+  integral[3] = H_phoEB_pt_MET->Integral(1,-1);
+  integral[4] = H_phoEB_pt_dphoMETPhi->Integral(1,-1);
+  integral[5] = H_phoEB_pt_njet->Integral(1,-1);
+  if(isSM == 0){
+    integral[6] = H_phoEB_pt_jetpt->Integral(1,-1);
+    integral[7] = H_phoEB_pt_jetjetdEta->Integral(1,-1);
+    integral[8] = H_phoEB_pt_jetjetdPhi->Integral(1,-1);
+    integral[9] = H_phoEB_pt_phojetdR->Integral(1,-1);
+    integral[10] = H_phoEB_pt_ptoverMET->Integral(1,-1);
+    integral[11] = H_phoEB_pt_mindJMETPhi->Integral(1,-1);
+    integral[12] = H_phoEB_pt_diejtMass->Integral(1,-1);
   }
 
+  TString ltext[20] = {"pho pT", "pho MID", "lep veto", "MET", "dphoMETPhi", "Njet", "jetPt", "jetjetdEta", "jetjetdPhi", "phojetdR", "ptoverMET", "mindJMETPhi", "dijetMass"};
+  
   ftext.open("dataEvents.txt", ios::out | ios::app);
   if(!ftext){
     cerr << "Can't open file !" << endl;
     exit(1);
   }
-
-  for(Int_t jj=0; jj<nhisto; jj++){
-    for(Int_t j=0; j<12; j++){
-      ftext << j << ") event yield: " << integral[j][jj] << endl;
-    }
+  ftext << "data yield" << endl;
+  for(Int_t j=0; j<13; j++){
+    ftext << setw(2) << left << j << setw(5) << left << ")" << setw(12) << left << ltext[j] << setw(8) << left << "yield " << integral[j] << endl;
   }
-   
   ftext.close();
+  
 }
